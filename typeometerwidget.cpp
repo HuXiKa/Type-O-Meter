@@ -65,7 +65,7 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
 
     painter.save();
     painter.translate(100,100);
-    painter.rotate(qMin(apm,300));
+    painter.rotate(qMin(apm,290));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 }
