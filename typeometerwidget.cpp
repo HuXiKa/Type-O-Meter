@@ -25,6 +25,9 @@ TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
     connect(&m_Ticker, SIGNAL(timeout()), this, SLOT(restartTime()));
     m_Ticker.start(RESTART_TIME);
 
+    QTimer *timer2 = new QTimer(this);
+    connect(timer2, SIGNAL(timeout()), this, SLOT(restartTime()));
+    timer2->start(RESTART_TIME);
     m_StartTime = QTime::currentTime();
     m_SessionStartTime = m_StartTime;
     m_SessionKeyPressCount = 0;
@@ -61,11 +64,11 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
     int difference = getElapsedTime();
     int apm = 0;
     if (difference > 0)
-        apm = 60000 / differene * (m_SessionKeyPressCount + m_SessionMousePressCount);
+        apm = 60000 / difference * (m_SessionKeyPressCount + m_SessionMousePressCount);
 
     painter.save();
     painter.translate(100,100);
-    painter.rotate(qMin(apm,290));
+    painter.rotate(-130 + qMin(apm,260));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 }
