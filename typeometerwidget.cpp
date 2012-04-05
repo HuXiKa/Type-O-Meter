@@ -8,7 +8,9 @@
 
 TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
     : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint /*| Qt::WindowStaysOnTopHint*/),
-      ui(new Ui::TypeOMeterWidget)
+      ui(new Ui::TypeOMeterWidget),
+    m_NextSessionKeyPressCount(0), m_NextSessionMousePressCount(0), m_SessionKeyPressCount(0), m_SessionMousePressCount(0),
+      m_TotalKeyPressCount(0), m_TotalMousePressCount(0), m_StartTime(QTime::currentTime())
 {
     ui->setupUi(this);
     this->move(100,100);
@@ -29,15 +31,9 @@ TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
 
     QTimer *timer2 = new QTimer(this);
     connect(timer2, SIGNAL(timeout()), this, SLOT(restartTime()));
-    timer2->start(RESTART_TIME);
-    m_StartTime = QTime::currentTime();
+    timer2->start(RESTART_TIME);    
     m_SessionStartTime = m_StartTime;
-    m_SessionKeyPressCount = 0;
-    m_SessionMousePressCount = 0;
-    m_TotalKeyPressCount = 0;
-    m_TotalMousePressCount = 0;
-    m_NextSessionKeyPressCount = 0;
-    m_NextSessionMousePressCount = 0;
+
 
     //QPixmap pixmap(":/image/background");
     //setMask(QBitmap(pixmap));
@@ -59,26 +55,20 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawPixmap(0,0,400,400,QPixmap(":/image/background"));
+    painter.drawPixmap(0,0,QPixmap(":/image/background"));
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(127, 0, 127));
-
-    int difference = getElapsedTime();
-    int apm = 0;
-    if (difference > 0)
-        apm = 60000 / difference * (m_SessionKeyPressCount + m_SessionMousePressCount);
+    painter.setBrush(QColor(0, 0, 255));
 
     painter.save();
-    painter.translate(100,100);
-    painter.rotate(-130 + qMin(apm,260));
+    painter.translate(200,200);
+    painter.rotate(-130 + qMin(m_SessionAPM,260));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 
-    int avarageAPM = ((double)(m_TotalKeyPressCount + m_TotalMousePressCount) / m_StartTime.elapsed()) * 60000;
-    painter.setBrush(QColor(12, 80, 127));
+    painter.setBrush(QColor(0, 255, 255));
     painter.save();
-    painter.translate(100,100);
-    painter.rotate(-130 + avarageAPM);
+    painter.translate(200,200);
+    painter.rotate(-130 + m_AvarageAPM);
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 }
@@ -93,4 +83,17 @@ void TypeOMeterWidget::restartTime()
     m_NextSessionKeyPressCount = 0;
     m_NextSessionMousePressCount = 0;
 
+}
+
+void TypeOMeterWidget::displayAPM()
+{
+    int difference = getElapsedTime();
+    m_SessionAPM = 0;
+    if (difference > 0)
+        m_SessionAPM = 60000 / difference * (m_SessionKeyPressCount + m_SessionMousePressCount);
+
+    //qDebug() << "KeyPress: " << m_SessionKeyPressCount << " mouse: " << m_SessionMousePressCount << " apm: " << apm << " difference: " << difference;
+    emit APMChanged(m_SessionAPM);
+    m_AvarageAPM = ((double)(m_TotalKeyPressCount + m_TotalMousePressCount) / m_StartTime.elapsed()) * 60000;
+    emit totalAPMChanged(m_AvarageAPM);
 }

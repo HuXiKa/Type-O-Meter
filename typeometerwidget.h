@@ -14,27 +14,17 @@ class TypeOMeterWidget;
 class TypeOMeterWidget : public QWidget
 {
     Q_OBJECT
-    /*
-                      60 sec
-  ------------------------------------------------
-  |                                          |
 
-  eltelt 3 s, ezalatt 2 key és 1 mouse
-  akkor 60 sec alatt
-
-  60000   x
-  3000   2+1
-
-  3 / 2 + 1 = 60 / x
-  60000 / (delayed) * (2+1) = x
-  */
 public:
     explicit TypeOMeterWidget(QWidget *parent = 0);
     ~TypeOMeterWidget();
     void paintEvent(QPaintEvent *);
+    /**
+      Returns the elapsed time since the current session started.
+    */
     int getElapsedTime() { return -QTime::currentTime().msecsTo(m_SessionStartTime); }
 
-public slots:
+public slots:    
     void registerMouseClick() {
         m_TotalMousePressCount++;
         m_SessionMousePressCount++;
@@ -49,17 +39,7 @@ public slots:
             m_NextSessionKeyPressCount++;
     }
 
-    void displayAPM(){
-        int difference = getElapsedTime();
-        int apm = 0;
-        if (difference > 0)
-            apm = 60000 / difference * (m_SessionKeyPressCount + m_SessionMousePressCount);
-
-        //qDebug() << "KeyPress: " << m_SessionKeyPressCount << " mouse: " << m_SessionMousePressCount << " apm: " << apm << " difference: " << difference;
-        emit APMChanged(apm);
-        int avarageAPM = ((double)(m_TotalKeyPressCount + m_TotalMousePressCount) / m_StartTime.elapsed()) * 60000;
-        emit totalAPMChanged(avarageAPM);
-    }
+    void displayAPM();
 
     void restartTime();
 signals:
@@ -77,8 +57,10 @@ private:
     int m_TotalKeyPressCount;
     int m_TotalMousePressCount;
     QTime m_StartTime;
-    QTime m_SessionStartTime;    
+    QTime m_SessionStartTime;
     QTimer m_Ticker;
+    int m_AvarageAPM;
+    int m_SessionAPM;
 };
 
 #endif // TYPEOMETERWIDGET_H
