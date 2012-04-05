@@ -22,8 +22,8 @@ FORMS    += typeometerwidget.ui
 RESOURCES += \
     images.qrc
 
-OTHER_FILES += \
-    README
+OTHER_FILES +=
+
 
 
 
