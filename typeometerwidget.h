@@ -52,6 +52,9 @@ private:
     static const int SHIFT_TIME = RESTART_TIME / 2;
     int m_NextSessionKeyPressCount;
     int m_NextSessionMousePressCount;
+    /**
+      Key presses in the current session.
+    */
     int m_SessionKeyPressCount;
     int m_SessionMousePressCount;
     int m_TotalKeyPressCount;
