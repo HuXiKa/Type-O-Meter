@@ -61,7 +61,7 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
     int difference = getElapsedTime();
     int apm = 0;
     if (difference > 0)
-        apm = 60000 / difference * (m_SessionKeyPressCount + m_SessionMousePressCount);
+        apm = 60000 / differene * (m_SessionKeyPressCount + m_SessionMousePressCount);
 
     painter.save();
     painter.translate(100,100);
