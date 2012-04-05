@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/image">
         <file alias="background">Cymphonix Speed-O-Meter 4.png</file>
+        <file>bg.png</file>
     </qresource>
 </RCC>

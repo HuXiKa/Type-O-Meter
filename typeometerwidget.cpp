@@ -9,7 +9,7 @@
 TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
     : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint /*| Qt::WindowStaysOnTopHint*/),
       ui(new Ui::TypeOMeterWidget),
-      m_SessionKeyPressCount(0), m_SessionMousePressCount(0),
+      m_SessionKeyPressCount(0), m_SessionMousePressCount(0), m_SessionAPM(0), m_AvarageAPM(0),
       m_TotalKeyPressCount(0), m_TotalMousePressCount(0), m_StartTime(QTime::currentTime())
 {
     ui->setupUi(this);
@@ -26,8 +26,8 @@ TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
     connect(this, SIGNAL(APMChanged(int)), ui->currentAPMLcdNumber, SLOT(display(int)));
     connect(this, SIGNAL(totalAPMChanged(int)), ui->totalAPMLcdNumber, SLOT(display(int)));
 
-    //QPixmap pixmap(":/image/background");
-    //setMask(QBitmap(pixmap));
+    QPixmap pixmap(":/image/bg");
+    setMask(QBitmap(pixmap));
 
 }
 
@@ -41,25 +41,25 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
     static const QPoint minuteHand[3] = {
         QPoint(7, 8),
         QPoint(-7, 8),
-        QPoint(0, -70)
+        QPoint(0, -150)
     };
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawPixmap(0,0,QPixmap(":/image/background"));
+    painter.drawPixmap(0,0,QPixmap(":/image/bg"));
     painter.setPen(Qt::NoPen);
     painter.setBrush(QColor(0, 0, 255));
 
     painter.save();
-    painter.translate(200,200);
-    painter.rotate(-130 + qMin(m_SessionAPM,260));
+    painter.translate(200,270);
+    painter.rotate(-110 + qMin(m_SessionAPM * 0.7,220.));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 
     painter.setBrush(QColor(0, 255, 255));
     painter.save();
-    painter.translate(200,200);
-    painter.rotate(-130 + m_AvarageAPM);
+    painter.translate(200,270);
+    painter.rotate(-110 + qMin(m_AvarageAPM * 0.7,220.));
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 }
@@ -68,8 +68,21 @@ void TypeOMeterWidget::displayAPM()
 {
 
     int currentAPM = MINUTE / SESSION_TIME * (m_SessionKeyPressCount + m_SessionMousePressCount);
+    if(currentAPM > m_SessionAPM){
+        for(int i = m_SessionAPM; i < currentAPM; ++i){
+            ui->currentAPMLcdNumber->display(i);
+            m_SessionAPM = currentAPM;
+        }
+    }
+    else if(currentAPM < m_SessionAPM){
+        for(int i = m_SessionAPM; i > currentAPM; --i){
+            ui->currentAPMLcdNumber->display(i);
+            m_SessionAPM = currentAPM;
+        }
+    }
 
-    m_SessionAPM = currentAPM;
+
+
 
     //qDebug() << "KeyPress: " << m_SessionKeyPressCount << " mouse: " << m_SessionMousePressCount << " apm: " << apm << " difference: " << difference;
 

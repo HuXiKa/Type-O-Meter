@@ -36,7 +36,7 @@ private:
     Ui::TypeOMeterWidget *ui;
     static const int MINUTE = 60000;
     static const int SESSION_TIME = MINUTE / 60 * 2;
-    static const int TICK_TIME = 20;        
+    static const int TICK_TIME = MINUTE / 60 / 30;   // 30 FPS
 
     int m_SessionKeyPressCount;
     int m_SessionMousePressCount;
