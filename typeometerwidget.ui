@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
-    <height>365</height>
+    <width>442</width>
+    <height>277</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,19 +16,59 @@
   <property name="styleSheet">
    <string notr="true"/>
   </property>
-  <widget class="QLCDNumber" name="lcdNumber">
+  <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>0</y>
-     <width>64</width>
-     <height>23</height>
+     <x>9</x>
+     <y>9</y>
+     <width>109</width>
+     <height>25</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 0, 0);
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Current</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLCDNumber" name="currentAPMLcdNumber">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(0, 0, 0);
 color: rgb(12, 255, 32);</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>55</y>
+     <width>113</width>
+     <height>25</height>
+    </rect>
    </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Avarage</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLCDNumber" name="totalAPMLcdNumber">
+      <property name="styleSheet">
+       <string notr="true">color: rgb(37, 30, 255);
+background-color: rgb(243, 255, 0);</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

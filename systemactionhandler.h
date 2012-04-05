@@ -4,6 +4,9 @@
 #include <QObject>
 #include <Windows.h>
 
+/*
+  huxika
+  */
 class SystemActionHandler : public QObject
 {
 

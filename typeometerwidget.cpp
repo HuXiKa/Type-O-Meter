@@ -7,10 +7,11 @@
 #include <QTime>
 
 TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
-    : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint),
+    : QWidget(parent, Qt::FramelessWindowHint | Qt::WindowSystemMenuHint /*| Qt::WindowStaysOnTopHint*/),
       ui(new Ui::TypeOMeterWidget)
 {
     ui->setupUi(this);
+    this->move(100,100);
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(timer, SIGNAL(timeout()), this, SLOT(displayAPM()));
@@ -20,7 +21,8 @@ TypeOMeterWidget::TypeOMeterWidget(QWidget *parent)
     handler->setMouseConnected(true);
     connect(handler, SIGNAL(keyPressed()), this, SLOT(registerKeypress()));
     connect(handler, SIGNAL(mousePressed()), this, SLOT(registerMouseClick()));
-    connect(this, SIGNAL(APMChanged(int)), ui->lcdNumber, SLOT(display(int)));
+    connect(this, SIGNAL(APMChanged(int)), ui->currentAPMLcdNumber, SLOT(display(int)));
+    connect(this, SIGNAL(totalAPMChanged(int)), ui->totalAPMLcdNumber, SLOT(display(int)));
 
     connect(&m_Ticker, SIGNAL(timeout()), this, SLOT(restartTime()));
     m_Ticker.start(RESTART_TIME);
@@ -69,6 +71,14 @@ void TypeOMeterWidget::paintEvent(QPaintEvent *)
     painter.save();
     painter.translate(100,100);
     painter.rotate(-130 + qMin(apm,260));
+    painter.drawConvexPolygon(minuteHand, 3);
+    painter.restore();
+
+    int avarageAPM = ((double)(m_TotalKeyPressCount + m_TotalMousePressCount) / m_StartTime.elapsed()) * 60000;
+    painter.setBrush(QColor(12, 80, 127));
+    painter.save();
+    painter.translate(100,100);
+    painter.rotate(-130 + avarageAPM);
     painter.drawConvexPolygon(minuteHand, 3);
     painter.restore();
 }

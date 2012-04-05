@@ -57,15 +57,18 @@ public slots:
 
         //qDebug() << "KeyPress: " << m_SessionKeyPressCount << " mouse: " << m_SessionMousePressCount << " apm: " << apm << " difference: " << difference;
         emit APMChanged(apm);
+        int avarageAPM = ((double)(m_TotalKeyPressCount + m_TotalMousePressCount) / m_StartTime.elapsed()) * 60000;
+        emit totalAPMChanged(avarageAPM);
     }
 
     void restartTime();
 signals:
     void APMChanged(int APM);
+    void totalAPMChanged(int APM);
 private:
     Ui::TypeOMeterWidget *ui;
     static const int TICK_TIME = 20;
-    static const int RESTART_TIME = 600;
+    static const int RESTART_TIME = 6000;
     static const int SHIFT_TIME = RESTART_TIME / 2;
     int m_NextSessionKeyPressCount;
     int m_NextSessionMousePressCount;
