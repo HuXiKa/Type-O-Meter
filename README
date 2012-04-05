@@ -1,0 +1,13 @@
+This is how this currently works. We start off watching action for RESTART_TIME.
+
+    0          SHIFT_TIME      RESTART_TIME
+    |--------------|----------------|
+
+The actions that happen goes into m_Session*Count, those that happen in the second half goes into m_NextSession*Count;
+
+When we reach restart time:
+
+    SHIFT_TIME                  RESTART_TIME
+    |--------------|----------------|
+
+And we will be standing in the middle. We'll have some history about the previous APM thanks to  m_NextSession*Count, this will become m_Session*Count.
